@@ -24,7 +24,7 @@ func ActionUsers(ctx context.Context) {
 
 	// 根据ID获取用户
 	if users, err = service.FetchUsersById(usersForm.UserId); err != nil {
-		Err(ctx, ERROR_PARAM, "ActionUsers FetchUsers Failed", err)
+		Err(ctx, ERROR, "ActionUsers FetchUsers Failed", err)
 		return
 	}
 

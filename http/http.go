@@ -1,10 +1,10 @@
 package http
 
 import (
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/middleware/recover"
-	"github.com/kataras/iris/middleware/logger"
 	"context"
+	"github.com/kataras/iris"
+	"github.com/kataras/iris/middleware/logger"
+	"github.com/kataras/iris/middleware/recover"
 	"strconv"
 	"sync"
 	"time"
