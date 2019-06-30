@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var MysqlDB *gorm.DB
+var mysqlDB *gorm.DB
 
 type MysqlConf struct {
 	Dsn     string `yaml:"dsn"`
@@ -16,21 +16,26 @@ type MysqlConf struct {
 
 // 初始化mysql
 func InitMysql(conf *MysqlConf) (err error){
-	MysqlDB, err = gorm.Open("mysql", conf.Dsn)
+	mysqlDB, err = gorm.Open("mysql", conf.Dsn)
 
 	if err == nil {
-		MysqlDB.DB().SetMaxIdleConns(conf.MaxIdle)
-		MysqlDB.DB().SetMaxOpenConns(conf.MaxOpen)
-		MysqlDB.DB().SetConnMaxLifetime(time.Duration(30) * time.Minute)
+		mysqlDB.DB().SetMaxIdleConns(conf.MaxIdle)
+		mysqlDB.DB().SetMaxOpenConns(conf.MaxOpen)
+		mysqlDB.DB().SetConnMaxLifetime(time.Duration(30) * time.Minute)
 
-		err = MysqlDB.DB().Ping()
+		err = mysqlDB.DB().Ping()
 	}
 	return
 }
 
+// 获取mysql连接
+func GetMysql() *gorm.DB {
+	return mysqlDB
+}
+
 // 关闭mysql
 func CloseMysql() {
-	if MysqlDB != nil {
-		MysqlDB.Close()
+	if mysqlDB != nil {
+		mysqlDB.Close()
 	}
 }

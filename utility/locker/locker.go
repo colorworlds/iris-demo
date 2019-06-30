@@ -1,6 +1,7 @@
-package db
+package locker
 
 import (
+	"IRIS_WEB/utility/db"
 	"errors"
 	"github.com/garyburd/redigo/redis"
 	"time"
@@ -14,20 +15,27 @@ type Locker struct {
 func Lock(key string) (locker *Locker) {
 	locker = &Locker{Key: key}
 
-	reply, _ := redis.String(OnceRedis("SET", key, 1, "EX", 60, "NX"))
+	conn := db.GetRedis()
+	defer conn.Close()
 
-	if reply != "OK" {
+	r, _ := redis.String(conn.Do("SET", key, 1, "EX", 60, "NX"))
+
+	if r != "OK" {
 		locker.Error = errors.New("locker failed.")
 	}
+
 	return
 }
 
 func TryLock(key string, timeout time.Duration) (locker *Locker) {
 	locker = &Locker{Key: key}
 
+	conn := db.GetRedis()
+	defer conn.Close()
+
 	start := time.Now()
 	for time.Now().Sub(start) < timeout {
-		reply, _ := redis.String(OnceRedis("SET", key, 1, "EX", 60, "NX"))
+		reply, _ := redis.String(conn.Do("SET", key, 1, "EX", 60, "NX"))
 
 		if reply == "OK" {
 			return
@@ -42,6 +50,9 @@ func TryLock(key string, timeout time.Duration) (locker *Locker) {
 
 func (lock *Locker) Close() {
 	if lock.Error == nil {
-		OnceRedis("DEL", lock.Key)
+		conn := db.GetRedis()
+		defer conn.Close()
+
+		conn.Do("DEL", lock.Key)
 	}
 }

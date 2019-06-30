@@ -4,7 +4,7 @@ import (
 	"flag"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"IRIS_WEB/tool/db"
+	"IRIS_WEB/utility/db"
 )
 
 var Conf *Config

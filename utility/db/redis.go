@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var RedisPool *redis.Pool
+var redisPool *redis.Pool
 
 type RedisConf struct {
 	Addr    string `yaml:"addr"`
@@ -17,7 +17,7 @@ type RedisConf struct {
 
 // 初始化redis
 func InitRedis(conf *RedisConf) (err error) {
-	RedisPool = &redis.Pool{
+	redisPool = &redis.Pool{
 		MaxIdle:     conf.MaxIdle,
 		MaxActive:   conf.MaxOpen,
 		IdleTimeout: time.Duration(30) * time.Minute,
@@ -26,28 +26,25 @@ func InitRedis(conf *RedisConf) (err error) {
 		},
 	}
 
-	redisConn := RedisPool.Get()
-	r, _ := redis.String(redisConn.Do("PING"))
-	redisConn.Close()
+	conn := GetRedis()
+	defer conn.Close()
 
-	if r != "PONG" {
+	if r, _ := redis.String(conn.Do("PING")); r != "PONG" {
 		err = errors.New("redis connect failed.")
 	}
+
 	return
 }
 
-// execute redis query once
-func OnceRedis(commandName string, args ...interface{}) (interface{}, error) {
-	conn := RedisPool.Get()
-	defer conn.Close()
-	return conn.Do(commandName, args ...)
+// 获取redis连接
+func GetRedis() redis.Conn {
+	return redisPool.Get()
 }
-
 
 // 关闭redis
 func CloseRedis() {
-	if RedisPool != nil {
-		RedisPool.Close()
+	if redisPool != nil {
+		redisPool.Close()
 	}
 }
 
