@@ -6,26 +6,27 @@ import (
 	"IRIS_WEB/utility/db"
 	"flag"
 	"fmt"
+	"os"
 )
 
-func main() {
+func init() {
 	flag.Parse()
-	if err := conf.InitConfig(); err != nil {
-		fmt.Printf("InitConfig Error: %v", err)
-		return
-	}
+	checkErr("InitConfig", conf.InitConfig())
 
 	defer db.CloseMysql()
-	if err := db.InitMysql(&conf.Conf.Mysql); err != nil {
-		fmt.Printf("InitMysql Error: %v", err)
-		return
-	}
+	checkErr("InitMysql", db.InitMysql(&conf.Conf.Mysql))
 
 	defer db.CloseRedis()
-	if err := db.InitRedis(&conf.Conf.Redis); err != nil {
-		fmt.Printf("InitRedis Error: %v", err)
-		return
-	}
+	checkErr("InitRedis", db.InitRedis(&conf.Conf.Redis))
+}
 
+func checkErr(errMsg string, err error) {
+	if err != nil {
+		fmt.Printf(errMsg + " Error: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func main() {
 	http.RunIris(conf.Conf.Server.Port)
 }
