@@ -1,6 +1,7 @@
 package api
 
 import (
+	"IRIS_WEB/utility/log"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/context"
 )
@@ -14,7 +15,7 @@ const (
 
 func Err(ctx context.Context, errCode int, errMsg string, err error) {
 	if err != nil {
-		ctx.Application().Logger().Errorf(errMsg + ": " + err.Error())
+		log.Error("[%s][%s] => [%v]", ctx.Path(), errMsg, err)
 	}
 	ctx.JSON(iris.Map{"code": errCode, "data": "", "msg": errMsg})
 }

@@ -5,11 +5,11 @@ logger:
   fileName: iris-web
   level: info
 mysql:
-  dsn: root:root@tcp(127.0.0.1:3306)/yii2new?charset=utf8&parseTime=true&loc=Local
+  dsn: root:root@tcp(192.168.200.129:3306)/admindb?charset=utf8&parseTime=true&loc=Local
   maxIdle: 10
   maxOpen: 100
 redis:
-  addr: 127.0.0.1:6379
+  addr: 192.168.200.129:6379
   db: 0
   maxIdle: 10
   maxOpen: 100

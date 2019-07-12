@@ -3,7 +3,6 @@ package http
 import (
 	"context"
 	"github.com/kataras/iris"
-	"github.com/kataras/iris/middleware/logger"
 	"github.com/kataras/iris/middleware/recover"
 	"strconv"
 	"sync"
@@ -14,7 +13,7 @@ func RunIris(port int) {
 	app := iris.New()
 
 	app.Use(recover.New())
-	app.Use(logger.New())
+	app.Use(NewAccessLogMdw())
 
 	// 优雅的关闭程序
 	serverWG := new(sync.WaitGroup)
@@ -42,7 +41,7 @@ func RunIris(port int) {
 		DisablePathCorrection:             false,
 		EnablePathEscape:                  false,
 		FireMethodNotAllowed:              false,
-		DisableBodyConsumptionOnUnmarshal: false,
+		DisableBodyConsumptionOnUnmarshal: true,
 		DisableAutoFireStatusCode:         false,
 		TimeFormat:                        "2006-01-02 15:04:05",
 		Charset:                           "UTF-8",
