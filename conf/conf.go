@@ -1,10 +1,11 @@
 package conf
 
 import (
+	"IRIS_WEB/utility/db"
+	"IRIS_WEB/utility/log"
 	"flag"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"IRIS_WEB/utility/db"
 )
 
 var Conf *Config
@@ -29,9 +30,10 @@ func InitConfig() error {
 
 // 总的配置
 type Config struct {
-	Server ServerConf `yaml:"server"`
-	Mysql  db.MysqlConf  `yaml:"mysql"`
-	Redis  db.RedisConf  `yaml:"redis"`
+	Server ServerConf     `yaml:"server"`
+	Logger log.LoggerConf `yaml:"logger"`
+	Mysql  db.MysqlConf   `yaml:"mysql"`
+	Redis  db.RedisConf   `yaml:"redis"`
 }
 
 // 服务的配置
