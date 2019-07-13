@@ -21,6 +21,7 @@ var jwtHandler = jwtMdw.New(jwtMdw.Config{
 // 请求日志记录
 func NewAccessLogMdw() iris.Handler {
 	return func(ctx context.Context) {
+		ctx.Application().Logger().Print("hello")
 		begin := time.Now()
 
 		method := ctx.Method()
