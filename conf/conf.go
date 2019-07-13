@@ -14,7 +14,7 @@ var Conf *Config
 var _path string
 
 func init() {
-	flag.StringVar(&_path, "c", "./config.yaml", "default config path")
+	flag.StringVar(&_path, "c", "config.yml", "default config path")
 }
 
 // 从配置文件中加载配置

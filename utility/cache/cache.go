@@ -38,3 +38,11 @@ func Get(key string) (string, error) {
 
 	return r, nil
 }
+
+//删除缓存
+func Del(key string) (int, error) {
+	conn := db.GetRedis()
+	defer conn.Close()
+
+	return redis.Int(conn.Do("DEL", key))
+}
