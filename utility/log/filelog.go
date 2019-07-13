@@ -136,6 +136,8 @@ func (f *FileLogger) split() (err error) {
 
 // 日志写入
 func (f *FileLogger) logWriter() {
+	defer func() { recover() }()
+	
 	for {
 		select {
 		case str := <-f.logChan:
@@ -149,6 +151,8 @@ func (f *FileLogger) logWriter() {
 
 // 日志分割监控
 func (f *FileLogger) fileMonitor() {
+	defer func() { recover() }()
+	
 	timer := time.NewTicker(300 * time.Second)
 	for {
 		select {
