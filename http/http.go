@@ -3,7 +3,6 @@ package http
 import (
 	"context"
 	"github.com/kataras/iris"
-	"github.com/kataras/iris/middleware/recover"
 	"strconv"
 	"sync"
 	"time"
@@ -12,7 +11,7 @@ import (
 func RunIris(port int) {
 	app := iris.New()
 
-	app.Use(recover.New())
+	app.Use(NewRecoverMdw())
 	app.Use(NewAccessLogMdw())
 
 	// 优雅的关闭程序
