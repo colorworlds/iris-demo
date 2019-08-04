@@ -73,11 +73,11 @@ func NewAccessLogMdw() iris.Handler {
 		body := helper.RequestBody(ctx)
 
 		defer func() {
-			code := ctx.ResponseWriter().StatusCode()
+			code := ctx.Values().Get("code")
 
 			duration := time.Now().Sub(begin).Nanoseconds() / 1000000
 
-			log.Info("[ACCESS-LOG] Method: %s, Path: %s, Header: %s, Queries: %s, Body: %s, StatusCode: %d, Duration: %d ms",
+			log.Info("[ACCESS-LOG] Method: %s, Path: %s, Header: %s, Queries: %s, Body: %s, Code: %v, Duration: %d ms",
 				method,
 				path,
 				header,

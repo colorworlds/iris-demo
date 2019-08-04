@@ -17,9 +17,14 @@ func Err(ctx context.Context, errCode int, errMsg string, err error) {
 	if err != nil {
 		log.Error("[%s][%s] => [%v]", ctx.Path(), errMsg, err)
 	}
+
+	ctx.Values().Set("code", errCode)
+
 	ctx.JSON(iris.Map{"code": errCode, "data": "", "msg": errMsg})
 }
 
 func Suc(ctx context.Context, data interface{}) {
+	ctx.Values().Set("code", SUCCESS)
+
 	ctx.JSON(iris.Map{"code": SUCCESS, "data": data, "msg": ""})
 }

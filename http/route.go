@@ -6,5 +6,6 @@ import (
 )
 
 func innerRoute(app *iris.Application) {
-	app.Any("/users", jwtHandler.Serve, api.ActionUsers)
+	app.Any("/users", api.ActionUsers)
+	app.Any("/users/auth", jwtHandler.Serve, api.ActionUsers)
 }
