@@ -65,9 +65,6 @@ func InitLogger(conf *LoggerConf) (err error) {
 		f.logLevel = INFO
 	}
 
-	f.mu.Lock()
-	defer f.mu.Unlock()
-
 	t, _ := time.Parse(DATE_FORMAT, time.Now().Format(DATE_FORMAT))
 	f.date = &t
 
@@ -110,6 +107,9 @@ func (f FileLogger) isExistOrCreate() {
 }
 
 func (f *FileLogger) split() (err error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+
 	logFile := filepath.Join(f.fileDir, f.fileName)
 	logFileBak := logFile + "." + f.date.Format(DATE_FORMAT)
 
@@ -139,13 +139,11 @@ func (f *FileLogger) logWriter() {
 	defer func() { recover() }()
 	
 	for {
-		select {
-		case str := <-f.logChan:
-			f.mu.RLock()
-			defer f.mu.RUnlock()
+		str := <-f.logChan
 
-			f.lg.Output(2, str)
-		}
+		f.mu.RLock()
+		f.lg.Output(2, str)
+		f.mu.RUnlock()
 	}
 }
 
@@ -153,17 +151,13 @@ func (f *FileLogger) logWriter() {
 func (f *FileLogger) fileMonitor() {
 	defer func() { recover() }()
 	
-	timer := time.NewTicker(300 * time.Second)
+	timer := time.NewTicker(30 * time.Second)
 	for {
-		select {
-		case <-timer.C:
-			if f.isMustSplit() {
-				f.mu.Lock()
-				defer f.mu.Unlock()
+		<-timer.C
 
-				if err := f.split(); err != nil {
-					Error("Log split error: %v\n", err)
-				}
+		if f.isMustSplit() {
+			if err := f.split(); err != nil {
+				Error("Log split error: %v\n", err)
 			}
 		}
 	}
