@@ -37,3 +37,89 @@ func RequestQueries(ctx context.Context) string {
 
 	return requestQuery
 }
+
+func Post(url string, header map[string]string, data iris.Map) ([]byte, error) {
+	var err error
+	var req *http.Request
+	var resp *http.Response
+	var client = &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+			DisableCompression: true,
+		},
+	}
+
+	if b, err := json.Marshal(data); err != nil {
+		return nil, err
+	} else {
+		if req, err = http.NewRequest("POST", url, bytes.NewReader(b)); err != nil {
+			return nil , err
+		}
+	}
+
+	if len(header) != 0 {
+		for key, value := range header {
+			req.Header.Add(key, value)
+		}
+	}
+
+	if resp, err = client.Do(req); err != nil {
+		return nil , err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, errors.New("Error resp code :" + strconv.Itoa(resp.StatusCode))
+	}
+
+	if body, err := ioutil.ReadAll(resp.Body); err != nil {
+		return nil, err
+	} else {
+		return body, nil
+	}
+}
+
+func Get(url string, header map[string]string, data iris.Map) ([]byte, error) {
+	var err error
+	var req *http.Request
+	var resp *http.Response
+	var client = &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+			DisableCompression: true,
+		},
+	}
+
+	if len(data) > 0 {
+		url += "?"
+		for k, v := range data {
+			url += fmt.Sprintf("%v=%v&", k, v)
+		}
+		url = strings.TrimRight(url, "&")
+	}
+
+	if req, err = http.NewRequest("GET", url, nil); err != nil {
+		return nil , err
+	}
+
+	if len(header) != 0 {
+		for key, value := range header {
+			req.Header.Add(key, value)
+		}
+	}
+
+	if resp, err = client.Do(req); err != nil {
+		return nil , err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, errors.New("Error resp code :" + strconv.Itoa(resp.StatusCode))
+	}
+
+	if body, err := ioutil.ReadAll(resp.Body); err != nil {
+		return nil, err
+	} else {
+		return body, nil
+	}
+}
