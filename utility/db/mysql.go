@@ -22,9 +22,8 @@ func InitMysql(conf *MysqlConf) (err error){
 		mysqlDB.DB().SetMaxIdleConns(conf.MaxIdle)
 		mysqlDB.DB().SetMaxOpenConns(conf.MaxOpen)
 		mysqlDB.DB().SetConnMaxLifetime(time.Duration(30) * time.Minute)
-
-		err = mysqlDB.DB().Ping()
 	}
+
 	return
 }
 
