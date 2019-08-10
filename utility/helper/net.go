@@ -2,8 +2,14 @@ package helper
 
 import (
 	"bytes"
+	"crypto/tls"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/kataras/iris"
 	"github.com/kataras/iris/context"
 	"io/ioutil"
+	"net/http"
 	"strings"
 )
 
@@ -69,7 +75,7 @@ func Post(url string, header map[string]string, data iris.Map) ([]byte, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return nil, errors.New("Error resp code :" + strconv.Itoa(resp.StatusCode))
+		return nil, errors.New(fmt.Sprintf("ErrCode:%d", resp.StatusCode))
 	}
 
 	if body, err := ioutil.ReadAll(resp.Body); err != nil {
@@ -114,7 +120,7 @@ func Get(url string, header map[string]string, data iris.Map) ([]byte, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return nil, errors.New("Error resp code :" + strconv.Itoa(resp.StatusCode))
+		return nil, errors.New(fmt.Sprintf("ErrCode:%d", resp.StatusCode))
 	}
 
 	if body, err := ioutil.ReadAll(resp.Body); err != nil {
