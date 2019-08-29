@@ -1,15 +1,16 @@
 server:
   port: 8080
+  logPath: logs
 logger:
   fileDir: D:/logs
   fileName: iris-web
   level: info
 mysql:
-  dsn: root:root@tcp(192.168.200.129:3306)/admindb?charset=utf8&parseTime=true&loc=Local
+  dsn: root:root@tcp(192.168.9.128:3306)/admindb?charset=utf8&parseTime=true&loc=Local
   maxIdle: 10
   maxOpen: 100
 redis:
-  addr: 192.168.200.129:6379
+  addr: 192.168.9.128:6379
   db: 0
   maxIdle: 10
   maxOpen: 100

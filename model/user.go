@@ -40,6 +40,7 @@ func (UserModel) TableName() string {
 
 type UserForm struct {
 	UserId int `form:"user_id" validate:"required,min=1,max=10000"`
+	UserEmail string `form:"user_email" validate:"email" json:"user_email"`
 }
 
 func (u UserForm) Validate() error {

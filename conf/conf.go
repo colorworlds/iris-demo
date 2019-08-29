@@ -2,10 +2,13 @@ package conf
 
 import (
 	"IRIS_WEB/utility/db"
-	"IRIS_WEB/utility/log"
 	"flag"
+	"github.com/kataras/golog"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"os"
+	"path/filepath"
+	"time"
 )
 
 var Conf *Config
@@ -28,15 +31,26 @@ func InitConfig() error {
 	return err
 }
 
+// 初始化日志
+func InitFileLog(serverName string) (*os.File, error) {
+	logFileName := filepath.Join(Conf.Server.LogPath, serverName+"_"+time.Now().Format("20060102")+".log")
+	f, err := os.OpenFile(logFileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		return nil, err
+	}
+	golog.AddOutput(f)
+	return f, nil
+}
+
 // 总的配置
 type Config struct {
-	Server ServerConf     `yaml:"server"`
-	Logger log.LoggerConf `yaml:"logger"`
-	Mysql  db.MysqlConf   `yaml:"mysql"`
-	Redis  db.RedisConf   `yaml:"redis"`
+	Server ServerConf   `yaml:"server"`
+	Mysql  db.MysqlConf `yaml:"mysql"`
+	Redis  db.RedisConf `yaml:"redis"`
 }
 
 // 服务的配置
 type ServerConf struct {
-	Port int `yaml:"port"`
+	Port    int    `yaml:"port"`
+	LogPath string `yaml:"logPath"`
 }

@@ -35,7 +35,7 @@ func RunIris(port int) {
 
 	// server配置
 	c := iris.WithConfiguration(iris.Configuration{
-		DisableStartupLog:                 false,
+		DisableStartupLog:                 true,
 		DisableInterruptHandler:           true,
 		DisablePathCorrection:             false,
 		EnablePathEscape:                  false,
@@ -44,8 +44,9 @@ func RunIris(port int) {
 		DisableAutoFireStatusCode:         false,
 		TimeFormat:                        "2006-01-02 15:04:05",
 		Charset:                           "UTF-8",
-		RemoteAddrHeaders: 				   map[string]bool{"X-Real-Ip": true,"X-Forwarded-For": true},
+		IgnoreServerErrors:                []string{iris.ErrServerClosed.Error()},
+		RemoteAddrHeaders:                 map[string]bool{"X-Real-Ip": true, "X-Forwarded-For": true},
 	})
 
-	app.Run(iris.Addr(":" + strconv.Itoa(port)), c)
+	app.Run(iris.Addr(":"+strconv.Itoa(port)), c)
 }

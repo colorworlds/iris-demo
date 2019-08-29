@@ -2,10 +2,10 @@ package http
 
 import (
 	"IRIS_WEB/utility/helper"
-	"IRIS_WEB/utility/log"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	jwtMdw "github.com/iris-contrib/middleware/jwt"
+	"github.com/kataras/golog"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/context"
 	"runtime"
@@ -46,7 +46,7 @@ func NewRecoverMdw() iris.Handler {
 				logMessage += fmt.Sprintf("Trace: %s\n", err)
 				logMessage += fmt.Sprintf("\n%s", stacktrace)
 
-				log.Warn("[EXCEPTION] %s", logMessage)
+				golog.Errorf("recover => %s", logMessage)
 
 				ctx.StatusCode(500)
 				ctx.StopExecution()
@@ -72,18 +72,20 @@ func NewAccessLogMdw() iris.Handler {
 
 		body := helper.RequestBody(ctx)
 
+		ctx.Recorder()
+
 		defer func() {
-			code := ctx.Values().Get("code")
+			respBody := string(ctx.Recorder().Body())
 
 			duration := time.Now().Sub(begin).Nanoseconds() / 1000000
 
-			log.Info("[ACCESS-LOG] Method: %s, Path: %s, Header: %s, Queries: %s, Body: %s, Code: %v, Duration: %d ms",
+			golog.Infof("Method: %s, Path: %s, Header: %s, Queries: %s, Body: %s, response: %v, Duration: %d ms",
 				method,
 				path,
 				header,
 				queries,
 				body,
-				code,
+				respBody,
 				duration,
 			)
 		}()

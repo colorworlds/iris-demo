@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"crypto/sha1"
 	"encoding/hex"
+	"strings"
 )
 
 // 获取MD5
@@ -26,4 +27,9 @@ func HMAC(key, data string) string {
 	_hmac := hmac.New(md5.New, []byte(key))
 	_hmac.Write([]byte(data))
 	return hex.EncodeToString(_hmac.Sum([]byte(nil)))
+}
+
+// 合并字符串
+func StrJoin(sep string, e... string) string {
+	return strings.Join(e, sep)
 }
