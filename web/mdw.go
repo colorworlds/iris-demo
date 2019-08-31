@@ -1,28 +1,19 @@
-package http
+package web
 
 import (
+	"IRIS_WEB/utility/cache"
 	"IRIS_WEB/utility/helper"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	jwtMdw "github.com/iris-contrib/middleware/jwt"
-	"github.com/kataras/golog"
 	"github.com/kataras/iris"
-	"github.com/kataras/iris/context"
+	"github.com/sirupsen/logrus"
 	"runtime"
+	"strings"
 	"time"
 )
 
-// jwt中间件
-var jwtHandler = jwtMdw.New(jwtMdw.Config{
-	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-		return []byte("IRIS_WEB"), nil
-	},
-	SigningMethod: jwt.SigningMethodHS256,
-})
-
 // 统一异常处理
 func NewRecoverMdw() iris.Handler {
-	return func(ctx context.Context) {
+	return func(ctx iris.Context) {
 		defer func() {
 			if err := recover(); err != nil {
 				if ctx.IsStopped() {
@@ -34,7 +25,6 @@ func NewRecoverMdw() iris.Handler {
 					_, f, l, got := runtime.Caller(i)
 					if !got {
 						break
-
 					}
 
 					stacktrace += fmt.Sprintf("%s:%d\n", f, l)
@@ -46,7 +36,7 @@ func NewRecoverMdw() iris.Handler {
 				logMessage += fmt.Sprintf("Trace: %s\n", err)
 				logMessage += fmt.Sprintf("\n%s", stacktrace)
 
-				golog.Errorf("recover => %s", logMessage)
+				logrus.Errorf("recover => %s", logMessage)
 
 				ctx.StatusCode(500)
 				ctx.StopExecution()
@@ -59,35 +49,42 @@ func NewRecoverMdw() iris.Handler {
 
 // 请求日志记录
 func NewAccessLogMdw() iris.Handler {
-	return func(ctx context.Context) {
+	return func(ctx iris.Context) {
+		// 只有记录在案的ip才会打印请求日志
+		realIp := ctx.RemoteAddr()
+		if v, _ := cache.Get("debug_" + realIp); v != "1" {
+			ctx.Next()
+			return
+		}
+
 		begin := time.Now()
 
-		method := ctx.Method()
+		reqBody := helper.RequestBody(ctx)
+		// 如果请求内容不是json，则不记录
+		if strings.Index(reqBody, "{") != 0 {
+			reqBody = "non json body..."
+		}
 
-		path := ctx.Path()
-
-		header := helper.RequestHeader(ctx)
-
-		queries := helper.RequestQueries(ctx)
-
-		body := helper.RequestBody(ctx)
-
-		ctx.Recorder()
+		ctx.Record()
 
 		defer func() {
 			respBody := string(ctx.Recorder().Body())
+			// 响应内容必须是json格式，含有code码的字符串，否则忽略响应内容
+			if strings.Index(respBody, "{") != 0 || strings.Index(respBody, "\"code\"") == -1 {
+				respBody = "non json body..."
+			}
 
 			duration := time.Now().Sub(begin).Nanoseconds() / 1000000
 
-			golog.Infof("Method: %s, Path: %s, Header: %s, Queries: %s, Body: %s, response: %v, Duration: %d ms",
-				method,
-				path,
-				header,
-				queries,
-				body,
-				respBody,
-				duration,
-			)
+			logrus.WithFields(logrus.Fields{
+				"ip":       realIp,
+				"method":   ctx.Method(),
+				"path":     ctx.Path(),
+				"header":   helper.RequestHeader(ctx),
+				"queries":  helper.RequestQueries(ctx),
+				"body":     reqBody,
+				"duration": duration,
+			}).Info(respBody)
 		}()
 
 		ctx.Next()

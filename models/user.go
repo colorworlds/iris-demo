@@ -1,6 +1,4 @@
-package model
-
-import "gopkg.in/go-playground/validator.v9"
+package models
 
 type UserModel struct {
 	ID                 int    `gorm:"column:id"`
@@ -36,15 +34,6 @@ CREATE TABLE `user` (
 
 func (UserModel) TableName() string {
 	return "user"
-}
-
-type UserForm struct {
-	UserId int `form:"user_id" validate:"required,min=1,max=10000"`
-	UserEmail string `form:"user_email" validate:"email" json:"user_email"`
-}
-
-func (u UserForm) Validate() error {
-	return validator.New().Struct(u)
 }
 
 type UserDataProvider struct {

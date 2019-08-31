@@ -15,7 +15,7 @@ type MysqlConf struct {
 }
 
 // 初始化mysql
-func InitMysql(conf *MysqlConf) (err error){
+func StartMysql(conf *MysqlConf) (err error){
 	mysqlDB, err = gorm.Open("mysql", conf.Dsn)
 
 	if err == nil {

@@ -1,11 +1,14 @@
-package http
+package web
 
 import (
 	"context"
-	"github.com/kataras/iris"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/kataras/iris"
+
+	"IRIS_WEB/controllers"
 )
 
 func RunIris(port int) {
@@ -22,20 +25,18 @@ func RunIris(port int) {
 		serverWG.Add(1)
 		defer serverWG.Done()
 
-		timeout := time.Second * 5
-		ctx, cancel := context.WithTimeout(context.Background(), timeout)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second * 5)
 		defer cancel()
 
-		// 关闭所有主机
 		app.Shutdown(ctx)
 	})
 
 	// 注册路由
-	innerRoute(app)
+	controllers.InnerRoute(app)
 
 	// server配置
 	c := iris.WithConfiguration(iris.Configuration{
-		DisableStartupLog:                 true,
+		DisableStartupLog:                 false,
 		DisableInterruptHandler:           true,
 		DisablePathCorrection:             false,
 		EnablePathEscape:                  false,

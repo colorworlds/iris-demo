@@ -1,20 +1,20 @@
-package service
+package services
 
 import (
-	"IRIS_WEB/dao"
-	"IRIS_WEB/model"
+	"IRIS_WEB/models"
+	"IRIS_WEB/models/dao"
 )
 
-func FetchUsersById(userId int) (provider []*model.UserDataProvider, err error) {
+func FetchUsersById(userId int) (provider []*models.UserDataProvider, err error) {
 	// 根据ID查询用户
-	var users []*model.UserModel
+	var users []*models.UserModel
 	if users, err = dao.QueryUsersById(userId); err != nil {
 		return
 	}
 
-	provider = make([]*model.UserDataProvider, 0, 32)
+	provider = make([]*models.UserDataProvider, 0, 32)
 	for _, user := range users {
-		provider = append(provider, &model.UserDataProvider{
+		provider = append(provider, &models.UserDataProvider{
 			ID:       user.ID,
 			UserName: user.UserName,
 			AuthKey:  user.AuthKey,

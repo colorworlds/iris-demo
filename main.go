@@ -1,35 +1,55 @@
 package main
 
 import (
-	"IRIS_WEB/conf"
-	"IRIS_WEB/http"
-	"IRIS_WEB/utility/db"
 	"flag"
 	"fmt"
 	"os"
+
+	"github.com/lestrrat-go/file-rotatelogs"
+	"github.com/sirupsen/logrus"
+
+	"IRIS_WEB/config"
+	"IRIS_WEB/utility/db"
+	"IRIS_WEB/web"
 )
 
 func main() {
+	// 初始化配置文件
 	flag.Parse()
-	checkErr("InitConfig", conf.InitConfig())
+	fmt.Print("InitConfig...\r")
+	checkErr("InitConfig", config.InitConfig())
+	fmt.Print("InitConfig Success!!!\n")
 
-	defer db.CloseMysql()
-	checkErr("InitMysql", db.InitMysql(&conf.Conf.Mysql))
-
-	defer db.CloseRedis()
-	checkErr("InitRedis", db.InitRedis(&conf.Conf.Redis))
+	// 创建文件日志，按天分割，日志文件仅保留一周
+	w, err := rotatelogs.New(config.Conf.Params.LogPath)
+	checkErr("CreateRotateLog", err)
 
 	// 设置日志
-	f, err := conf.InitFileLog("iris_web")
-	checkErr("InitFileLog", err)
-	defer f.Close()
+	logrus.SetOutput(w)
+	logrus.SetFormatter(&logrus.JSONFormatter{})
+	logrus.SetReportCaller(true)
 
-	http.RunIris(conf.Conf.Server.Port)
+	// 启动mysql
+	defer db.CloseMysql()
+	fmt.Print("StartMysql...\r")
+	checkErr("StartMysql", db.StartMysql(&config.Conf.Mysql))
+	fmt.Print("StartMysql Success!!!\n")
+
+	// 启动redis
+	defer db.CloseRedis()
+	fmt.Print("StartRedis...\r")
+	checkErr("StartRedis", db.StartRedis(&config.Conf.Redis))
+	fmt.Print("StartRedis Success!!!\n")
+
+	// 开始运行iris框架
+	fmt.Print("RunIris...\r")
+	web.RunIris(config.Conf.Server.Port)
 }
 
+// 检查错误
 func checkErr(errMsg string, err error) {
 	if err != nil {
-		fmt.Printf(errMsg+" Error: %v\n", err)
+		fmt.Printf("%s Error: %v\n", errMsg, err)
 		os.Exit(1)
 	}
 }

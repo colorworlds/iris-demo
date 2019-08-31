@@ -3,7 +3,7 @@ package errs
 import (
 	"IRIS_WEB/utility/helper"
 	"fmt"
-	"github.com/kataras/golog"
+	"github.com/sirupsen/logrus"
 	"path/filepath"
 	"runtime"
 	"strconv"
@@ -30,7 +30,7 @@ func NewError(code int, msg string, err ...error) *Error {
 	}
 
 	if len(err) > 0 {
-		golog.Errorf("%v, err: %v", e, strings.ReplaceAll(err[0].Error(), "\n", " "))
+		logrus.Errorf("%v, err: %v", e, strings.ReplaceAll(err[0].Error(), "\n", " "))
 	}
 
 	return e

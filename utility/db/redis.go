@@ -16,7 +16,7 @@ type RedisConf struct {
 }
 
 // 初始化redis
-func InitRedis(conf *RedisConf) (err error) {
+func StartRedis(conf *RedisConf) (err error) {
 	redisPool = &redis.Pool{
 		MaxIdle:     conf.MaxIdle,
 		MaxActive:   conf.MaxOpen,

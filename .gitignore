@@ -1,5 +1,9 @@
 /.idea
+
 /go.sum
-/main.exe
+/*.exe
+/*.log
+
 /test.go
+
 /logs
