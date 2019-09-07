@@ -1,12 +1,11 @@
 package http
 
 import (
-	"github.com/kataras/iris"
-
 	"IRIS_WEB/models"
 	"IRIS_WEB/models/dto"
-	"IRIS_WEB/models/errs"
+	"IRIS_WEB/errs"
 	"IRIS_WEB/services"
+	"github.com/kataras/iris"
 )
 
 func ActionUsers(ctx iris.Context) {
@@ -14,14 +13,9 @@ func ActionUsers(ctx iris.Context) {
 	var params dto.UserDTO
 	var users []*models.UserDataProvider
 
-	if err = ctx.ReadForm(&params); err != nil {
-		ctx.JSON(errs.ParamError(err))
-		return
-	}
-
-	//查看是否符合验证
-	if err = params.Validate(); err != nil {
-		ctx.JSON(errs.ParamError(err))
+	// 绑定参数
+	if err = params.Bind(ctx); err != nil {
+		ctx.JSON(err)
 		return
 	}
 

@@ -1,7 +1,6 @@
 package web
 
 import (
-	"IRIS_WEB/utility/cache"
 	"IRIS_WEB/utility/helper"
 	"fmt"
 	"github.com/kataras/iris"
@@ -50,18 +49,11 @@ func NewRecoverMdw() iris.Handler {
 // 请求日志记录
 func NewAccessLogMdw() iris.Handler {
 	return func(ctx iris.Context) {
-		// 只有记录在案的ip才会打印请求日志
-		realIp := ctx.RemoteAddr()
-		if v, _ := cache.Get("debug_" + realIp); v != "1" {
-			ctx.Next()
-			return
-		}
-
 		begin := time.Now()
 
 		reqBody := helper.RequestBody(ctx)
 		// 如果请求内容不是json，则不记录
-		if strings.Index(reqBody, "{") != 0 {
+		if reqBody != "" && strings.Index(reqBody, "{") != 0 {
 			reqBody = "non json body..."
 		}
 
@@ -77,12 +69,13 @@ func NewAccessLogMdw() iris.Handler {
 			duration := time.Now().Sub(begin).Nanoseconds() / 1000000
 
 			logrus.WithFields(logrus.Fields{
-				"ip":       realIp,
-				"method":   ctx.Method(),
-				"path":     ctx.Path(),
-				"header":   helper.RequestHeader(ctx),
+				"ip":     ctx.RemoteAddr(),
+				"method": ctx.Method(),
+				"path":   ctx.Path(),
+				// 头信息的内容有写多，可以根据情况，只取某些字段
+				// "header":   helper.RequestHeader(ctx),
 				"queries":  helper.RequestQueries(ctx),
-				"body":     reqBody,
+				"reqbody":  reqBody,
 				"duration": duration,
 			}).Info(respBody)
 		}()

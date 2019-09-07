@@ -13,8 +13,8 @@ require (
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/flosch/pongo2 v0.0.0-20190707114632-bbf5a6c351f4 // indirect
 	github.com/gavv/monotime v0.0.0-20190418164738-30dba4353424 // indirect
-	github.com/go-playground/locales v0.12.1 // indirect
-	github.com/go-playground/universal-translator v0.16.0 // indirect
+	github.com/go-playground/locales v0.12.1
+	github.com/go-playground/universal-translator v0.16.0
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/gorilla/schema v1.1.0 // indirect
@@ -29,10 +29,10 @@ require (
 	github.com/jonboulle/clockwork v0.1.0 // indirect
 	github.com/json-iterator/go v1.1.7 // indirect
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
-	github.com/kataras/golog v0.0.0-20190624001437-99c81de45f40
+	github.com/kataras/golog v0.0.0-20190624001437-99c81de45f40 // indirect
 	github.com/kataras/iris v11.1.1+incompatible
 	github.com/kataras/pio v0.0.0-20190103105442-ea782b38602d // indirect
-	github.com/klauspost/compress v1.8.1 // indirect
+	github.com/klauspost/compress v1.8.2 // indirect
 	github.com/klauspost/cpuid v1.2.1 // indirect
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/lestrrat-go/file-rotatelogs v2.2.0+incompatible
