@@ -1,7 +1,5 @@
 package helper
 
-import "fmt"
-
 // 三元运算符
 func IF(condition bool, val1, val2 interface{}) interface{} {
 	if condition {
@@ -13,9 +11,7 @@ func IF(condition bool, val1, val2 interface{}) interface{} {
 
 // 两元运算符
 func OR(val1, val2 interface{}) interface{} {
-	v := fmt.Sprintf("%v", val1)
-
-	if v == "" || v == "0" || v == "<nil>" {
+	if IsEmpty(val1){
 		return val2
 	} else {
 		return val1
