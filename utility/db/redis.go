@@ -8,21 +8,14 @@ import (
 
 var redisPool *redis.Pool
 
-type RedisConf struct {
-	Addr    string `yaml:"addr"`
-	DB      int    `yaml:"db"`
-	MaxIdle int    `yaml:"maxIdle"`
-	MaxOpen int    `yaml:"maxOpen"`
-}
-
 // 初始化redis
-func StartRedis(conf *RedisConf) (err error) {
+func StartRedis(addr string, db, maxIdle, maxOpen int) (err error) {
 	redisPool = &redis.Pool{
-		MaxIdle:     conf.MaxIdle,
-		MaxActive:   conf.MaxOpen,
+		MaxIdle:     maxIdle,
+		MaxActive:   maxOpen,
 		IdleTimeout: time.Duration(30) * time.Minute,
 		Dial: func() (redis.Conn, error) {
-			return redis.Dial("tcp", conf.Addr, redis.DialDatabase(conf.DB))
+			return redis.Dial("tcp", addr, redis.DialDatabase(db))
 		},
 	}
 

@@ -8,19 +8,13 @@ import (
 
 var mysqlDB *gorm.DB
 
-type MysqlConf struct {
-	Dsn     string `yaml:"dsn"`
-	MaxIdle int    `yaml:"maxIdle"`
-	MaxOpen int    `yaml:"maxOpen"`
-}
-
 // 初始化mysql
-func StartMysql(conf *MysqlConf) (err error){
-	mysqlDB, err = gorm.Open("mysql", conf.Dsn)
+func StartMysql(dsn string, maxIdle, maxOpen int) (err error){
+	mysqlDB, err = gorm.Open("mysql", dsn)
 
 	if err == nil {
-		mysqlDB.DB().SetMaxIdleConns(conf.MaxIdle)
-		mysqlDB.DB().SetMaxOpenConns(conf.MaxOpen)
+		mysqlDB.DB().SetMaxIdleConns(maxIdle)
+		mysqlDB.DB().SetMaxOpenConns(maxOpen)
 		mysqlDB.DB().SetConnMaxLifetime(time.Duration(30) * time.Minute)
 	}
 

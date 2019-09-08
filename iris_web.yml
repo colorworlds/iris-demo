@@ -1,0 +1,11 @@
+server_port: 8080
+log_path: runtime/logs/iris_web_%Y%m%d.log
+
+mysql_dsn: root:root@tcp(127.0.0.1:3306)/godb?charset=utf8&parseTime=true&loc=Local
+mysql_max_idle: 10
+mysql_max_open: 100
+
+redis_addr: 127.0.0.1:6379
+redis_db: 0
+redis_max_idle: 10
+redis_max_open: 100
