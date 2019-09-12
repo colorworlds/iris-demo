@@ -1,4 +1,4 @@
-package errs
+package errors
 
 import (
 	"IRIS_WEB/utility/helper"

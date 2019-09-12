@@ -1,9 +1,9 @@
 package dto
 
 import (
-	"IRIS_WEB/errs"
-	"github.com/kataras/iris"
+	. "IRIS_WEB/errors"
 	"IRIS_WEB/utility/validator"
+	"github.com/kataras/iris"
 )
 
 type UserDTO struct {
@@ -14,11 +14,11 @@ type UserDTO struct {
 
 func (u *UserDTO) Bind(ctx iris.Context) error {
 	if err := ctx.ReadForm(u); err != nil {
-		return errs.ParamError("invalid form format")
+		return ParamError("invalid form format")
 	}
 
-	if err := validator.Validate.Struct(u); err != nil {
-		return errs.ParamError(validator.TransError(err))
+	if err, errMsg := validator.Check(u); err != nil {
+		return ParamError(err, errMsg)
 	}
 
 	return nil

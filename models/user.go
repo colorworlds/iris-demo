@@ -35,11 +35,3 @@ CREATE TABLE `user` (
 func (UserModel) TableName() string {
 	return "user"
 }
-
-type UserDataProvider struct {
-	ID       int    `json:"user_id"`
-	UserName string `json:"user_name"`
-	AuthKey  string `json:"auth_key"`
-	Email    string `json:"email"`
-	Status   int    `json:"status"`
-}

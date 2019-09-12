@@ -1,11 +1,4 @@
-package errs
-
-import "github.com/kataras/iris"
-
-// 没有错误
-func NoError(data... interface{}) iris.Map {
-	return iris.Map{"code": 1000, "data": data}
-}
+package errors
 
 // 系统性错误
 func SystemError(options ...interface{}) *Error {
