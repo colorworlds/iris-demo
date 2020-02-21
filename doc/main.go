@@ -1,4 +1,4 @@
-```
+
 import (
 	//标准包
 	"flag"  //用于命令行参数的解析
@@ -55,4 +55,4 @@ func checkErr(errMsg string, err error) {
 		os.Exit(1)
 	}
 }
-```
+
