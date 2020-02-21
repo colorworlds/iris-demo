@@ -61,7 +61,7 @@ Usage of ./flag_demo:
         婚否
 ```
 
-也可以像这样赋值：
+也可以像这样赋值，布尔值参数married需要使用等号来赋值：
 ```
 $ ./flag_demo -name 小红 --age 16 -married=true
 ```
