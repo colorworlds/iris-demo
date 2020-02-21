@@ -1,12 +1,15 @@
 ```
 import (
-	"flag"
+	//标准包
+	"flag"  //用于命令行参数的解析
 	"fmt"
 	"os"
 
-	"github.com/lestrrat-go/file-rotatelogs"
-	"github.com/sirupsen/logrus"
+	//第三方包
+	"github.com/lestrrat-go/file-rotatelogs"  //日志相关，没用过
+	"github.com/sirupsen/logrus"  //日志库
 
+	//导入自定义的包
 	. "IRIS_WEB/config"
 	"IRIS_WEB/utility/db"
 	"IRIS_WEB/web"
